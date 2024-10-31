@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Baby Monitor</string>
+    <string name="stop">Stop</string>
+    <string name="start">Start</string>
+    <string name="status">status</string>
+    <string name="textview">TextView</string>
+    <string name="gain_factor">Gain Factor</string>
+    <string name="active">\@Active</string>
+    <string name="_1">1</string>
+    <string name="minVolume">TextView</string>
+    <string name="maxVolume">TextView</string>
+    <string name="_2">2</string>
+    <string name="_200">200</string>
+</resources>

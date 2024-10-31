@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Real_time_noise_reducer</string>
+    <string name="status">status</string>
+    <string name="stop">stop</string>
+    <string name="start">start</string>
+    <string name="_200">200</string>
+    <string name="_0">0</string>
+    <string name="_1">1</string>
+</resources>
