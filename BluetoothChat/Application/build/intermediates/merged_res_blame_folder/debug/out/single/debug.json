@@ -1,0 +1,70 @@
+[
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/layout_fragment_bluetooth_chat.xml.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/layout/fragment_bluetooth_chat.xml"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/drawable-hdpi_tile.9.png.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/drawable-hdpi/tile.9.png"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/drawable-xhdpi_ic_action_device_access_bluetooth_searching.png.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/drawable-xhdpi/ic_action_device_access_bluetooth_searching.png"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/drawable-xxhdpi_ic_action_device_access_bluetooth_searching.png.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/drawable-xxhdpi/ic_action_device_access_bluetooth_searching.png"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/drawable-xhdpi_ic_launcher.png.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/drawable-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/layout_activity_main.xml.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/layout_activity_device_list.xml.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/layout/activity_device_list.xml"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/drawable-hdpi_ic_launcher.png.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/drawable-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/drawable-xxhdpi_ic_launcher.png.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/drawable-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/layout_device_name.xml.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/layout/device_name.xml"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/layout_message.xml.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/layout/message.xml"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/menu_main.xml.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/menu/main.xml"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/menu_bluetooth_chat.xml.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/menu/bluetooth_chat.xml"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/drawable-hdpi_ic_action_device_access_bluetooth_searching.png.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/drawable-hdpi/ic_action_device_access_bluetooth_searching.png"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/drawable-mdpi_ic_action_device_access_bluetooth_searching.png.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/drawable-mdpi/ic_action_device_access_bluetooth_searching.png"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/layout-w720dp_activity_main.xml.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/layout-w720dp/activity_main.xml"
+    },
+    {
+        "merged": "com.example.android.bluetoothchat.Application-merged_res-21:/drawable-mdpi_ic_launcher.png.flat",
+        "source": "com.example.android.bluetoothchat.Application-main-23:/drawable-mdpi/ic_launcher.png"
+    }
+]

@@ -1,0 +1,114 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<!--
+3 Copyright 2014 The Android Open Source Project
+4
+5 Licensed under the Apache License, Version 2.0 (the "License");
+6 you may not use this file except in compliance with the License.
+7 You may obtain a copy of the License at
+8
+9     http://www.apache.org/licenses/LICENSE-2.0
+10
+11 Unless required by applicable law or agreed to in writing, software
+12 distributed under the License is distributed on an "AS IS" BASIS,
+13 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+14 See the License for the specific language governing permissions and
+15 limitations under the License.
+16-->
+17<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+18    package="com.example.android.bluetoothchat" >
+19
+20    <uses-sdk
+21        android:minSdkVersion="26"
+21-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml
+22        android:targetSdkVersion="32" />
+22-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml
+23
+24    <!-- Min/target SDK versions (<uses-sdk>) managed by build.gradle -->
+25
+26    <uses-permission android:name="android.permission.BLUETOOTH" />
+26-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:23:5-68
+26-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:23:22-65
+27    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+27-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:24:5-73
+27-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:24:22-70
+28    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+28-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:25:5-78
+28-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:25:22-75
+29    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+29-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:26:5-76
+29-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:26:22-73
+30    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+30-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:27:5-74
+30-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:27:22-71
+31    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+31-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:28:5-81
+31-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:28:22-78
+32    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+32-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:29:5-79
+32-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:29:22-76
+33
+34    <application
+34-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:31:5-52:19
+35        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+35-->[androidx.core:core:1.8.0] C:\Users\06afr01\.gradle\caches\transforms-3\28a1708219c3158e49b329d141e5cfff\transformed\core-1.8.0\AndroidManifest.xml:24:18-86
+36        android:debuggable="true"
+37        android:extractNativeLibs="false"
+38        android:label="@string/app_name"
+38-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:32:13-45
+39        android:testOnly="true" >
+40        <activity
+40-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:35:9-43:20
+41            android:name="com.example.android.bluetoothchat.MainActivity"
+41-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:36:17-45
+42            android:exported="true"
+42-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:38:17-40
+43            android:label="@string/app_name" >
+43-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:37:17-49
+44            <intent-filter>
+44-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:39:13-42:29
+45                <action android:name="android.intent.action.MAIN" />
+45-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:40:17-69
+45-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:40:25-66
+46
+47                <category android:name="android.intent.category.LAUNCHER" />
+47-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:41:17-77
+47-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:41:27-74
+48            </intent-filter>
+49        </activity>
+50        <activity
+50-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:45:9-50:42
+51            android:name="com.example.android.bluetoothchat.DeviceListActivity"
+51-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:46:17-51
+52            android:configChanges="orientation|keyboardHidden"
+52-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:47:17-67
+53            android:exported="true"
+53-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:50:17-40
+54            android:label="@string/select_device"
+54-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:48:17-54
+55            android:theme="@android:style/Theme.Holo.Dialog" />
+55-->C:\Users\06afr01\Desktop\VoiceChoice\BluetoothChat\Application\src\main\AndroidManifest.xml:49:17-65
+56
+57        <provider
+57-->[androidx.emoji2:emoji2:1.2.0] C:\Users\06afr01\.gradle\caches\transforms-3\7b79f7e4a058224274d9b5ea417be867\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+58            android:name="androidx.startup.InitializationProvider"
+58-->[androidx.emoji2:emoji2:1.2.0] C:\Users\06afr01\.gradle\caches\transforms-3\7b79f7e4a058224274d9b5ea417be867\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:25:13-67
+59            android:authorities="com.example.android.bluetoothchat.androidx-startup"
+59-->[androidx.emoji2:emoji2:1.2.0] C:\Users\06afr01\.gradle\caches\transforms-3\7b79f7e4a058224274d9b5ea417be867\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:26:13-68
+60            android:exported="false" >
+60-->[androidx.emoji2:emoji2:1.2.0] C:\Users\06afr01\.gradle\caches\transforms-3\7b79f7e4a058224274d9b5ea417be867\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:27:13-37
+61            <meta-data
+61-->[androidx.emoji2:emoji2:1.2.0] C:\Users\06afr01\.gradle\caches\transforms-3\7b79f7e4a058224274d9b5ea417be867\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+62                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+62-->[androidx.emoji2:emoji2:1.2.0] C:\Users\06afr01\.gradle\caches\transforms-3\7b79f7e4a058224274d9b5ea417be867\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:30:17-75
+63                android:value="androidx.startup" />
+63-->[androidx.emoji2:emoji2:1.2.0] C:\Users\06afr01\.gradle\caches\transforms-3\7b79f7e4a058224274d9b5ea417be867\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:31:17-49
+64            <meta-data
+64-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\06afr01\.gradle\caches\transforms-3\e49fb580d7eda2494a8100e094041989\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:31:13-33:52
+65                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+65-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\06afr01\.gradle\caches\transforms-3\e49fb580d7eda2494a8100e094041989\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:32:17-78
+66                android:value="androidx.startup" />
+66-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\06afr01\.gradle\caches\transforms-3\e49fb580d7eda2494a8100e094041989\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:33:17-49
+67        </provider>
+68    </application>
+69
+70</manifest>

@@ -1,9 +1,15 @@
 package com.example.babymonitor
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
+import android.bluetooth.BluetoothServerSocket
+import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.media.AudioDeviceInfo
@@ -16,6 +22,7 @@ import android.media.MediaRecorder
 import android.media.audiofx.Equalizer
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.os.PowerManager
 import android.text.Editable
 import android.text.TextWatcher
@@ -33,6 +40,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.util.UUID
 import kotlin.math.abs
 import kotlin.math.pow
 
@@ -66,6 +76,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var thread: Thread;
     public lateinit var wakeLock: PowerManager.WakeLock
 
+    @SuppressLint("MissingPermission")
     @RequiresApi(Build.VERSION_CODES.S)
     @Override
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,19 +97,45 @@ class MainActivity : ComponentActivity() {
         //devices += audioManager.getDevices(GET_DEVICES_OUTPUTS)
         val arraySpinner: MutableList<String> = ArrayList()
 
+        //var bleInputDevice: AudioDeviceInfo? = null
+        var scoInputDevice: AudioDeviceInfo? = null
+
+        val bluetoothManager: BluetoothManager = this.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager;
+        val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.getAdapter();
+
+        val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices;
+        pairedDevices?.forEach { device ->
+            val deviceName = device.name
+            val deviceHardwareAddress = device.address // MAC address
+            Log.d("Bluetooth", "Found connected bl device" + deviceName + ", " + deviceHardwareAddress)
+        }
+        var handler: Handler = Handler();
+
+        AcceptThread().start();
+        var bluetoothServiceGuy = MyBluetoothService(handler);
+        //bluetoothServiceGuy.ConnectedThread();
+
+        // Register for broadcasts when a device is discovered.
+        //val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+        //registerReceiver(receiver, filter)
+
         for (device in allDevices) {
             //arraySpinner.add(device.getAddress().toString());
             //bleInputDevice = device
             //break
             if (device.type == AudioDeviceInfo.TYPE_BLE_HEADSET) {
                 Log.d("DEVICE", "Is BLE HEADSET")
+                //bleInputDevice = device
+
                 devices.add(device);
                 arraySpinner.add(device.getAddress().toString());
+                break;
             }
             else if (device.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO) {
                 Log.d("DEVICE", "Is BLUETOOTH SCO")
-                //devices.add(device);
-                //arraySpinner.add(device.getAddress().toString());
+                scoInputDevice = device
+                devices.add(device);
+                arraySpinner.add(device.getAddress().toString());
             }
             else if (device.type == AudioDeviceInfo.TYPE_BUILTIN_MIC) {
                 Log.d("DEVICE", "Is BUILT IN MIC")
@@ -137,7 +174,17 @@ class MainActivity : ComponentActivity() {
                 Log.d("DEVICE", "Is " + device.type);
             }
         }
-        inputDevice = devices[0];
+
+        /*if(bleInputDevice != null) {
+            inputDevice = bleInputDevice
+            Log.d("bluetooth", "Bluetooth device connected (BLE)");
+        }
+        else */if(scoInputDevice != null) {
+            inputDevice = scoInputDevice
+            Log.d("bluetooth", "Bluetooth device connected (SCO)");
+        }
+        else
+            inputDevice = devices[0];
         Log.d("Device", arraySpinner.size.toString());
 
         val s = findViewById<View>(R.id.InputMic) as Spinner
@@ -253,6 +300,251 @@ class MainActivity : ComponentActivity() {
         })
     }
 
+
+    private inner class AcceptThread : Thread() {
+        val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter();
+        /*private val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.NONE) {
+            bluetoothAdapter?.listenUsingInsecureRfcommWithServiceRecord("Voice Choice", UUID.fromString("27805505-bfcb-43bc-a048-dd7d933b1b96"))
+        }*/
+
+
+
+
+
+
+
+
+
+        var handler: Handler = Handler();
+
+        override fun run() {
+            var isSecure: Boolean = true;
+            var D: Boolean = true;
+
+            //var bt: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter();
+
+            if(bluetoothAdapter == null) {
+                //throw new RuntimeException("No bluetooth adapter...");
+            }
+            var rfcommSocket: BluetoothServerSocket? = null;
+            var l2capSocket: BluetoothServerSocket? = null;
+            var initSocketOK: Boolean = false;
+            // It's possible that create will fail in some cases. retry for 10 times
+            for (i in 1..9) {
+                initSocketOK = true;
+                try {
+                    if (rfcommSocket == null) {
+                        if (isSecure) {
+                            rfcommSocket = bluetoothAdapter.listenUsingRfcommOn(rfcommChannel);
+                        } else {
+                            rfcommSocket = bluetoothAdapter.listenUsingInsecureRfcommOn(rfcommChannel);
+                        }
+                    }
+                    if (l2capSocket == null) {
+                        if (isSecure) {
+                            l2capSocket = bluetoothAdapter.listenUsingL2capOn(l2capPsm);
+                        } else {
+                            l2capSocket = bluetoothAdapter.listenUsingInsecureL2capOn(l2capPsm);
+                        }
+                    }
+                } catch (e: IOException) {
+                    Log.e("STAG", "Error create ServerSockets ", e);
+                    initSocketOK = false;
+                } catch (e: SecurityException) {
+                    Log.e("STAG", "Error create ServerSockets ", e);
+                    initSocketOK = false;
+                    break;
+                }
+                if (!initSocketOK) {
+                    // Need to break out of this loop if BT is being turned off.
+                    var state: Int = bluetoothAdapter!!.getState();
+                    if ((state != BluetoothAdapter.STATE_TURNING_ON) && (state
+                                != BluetoothAdapter.STATE_ON)) {
+                        Log.w("STAG", "initServerSockets failed as BT is (being) turned off");
+                        break;
+                    }
+                    try {
+                        if (D) {
+                            Log.v("STAG", "waiting 300 ms...");
+                        }
+                        Thread.sleep(300);
+                    } catch (e: InterruptedException) {
+                        Log.e("STAG", "create() was interrupted");
+                    }
+                } else {
+                    break;
+                }
+            }
+            if (initSocketOK) {
+                if (D) {
+                    Log.d("STAG", "Succeed to create listening sockets ");
+                }
+                //ObexServerSockets sockets = new ObexServerSockets(validator, rfcommSocket, l2capSocket);
+                sockets.startAccept();
+                return sockets;
+            } else
+            {
+                Log.e("STAG", "Error to create listening socket after " + CREATE_RETRY_TIME + " try");
+                return null;
+            }
+
+
+
+
+
+            // Keep listening until exception occurs or a socket is returned.
+            Log.d("mmSERVERSOCKET", mmServerSocket.toString());
+            var socket: BluetoothSocket? = null;
+
+            var shouldLoop = true
+            while (shouldLoop) {
+                Log.d("Bluetooth", "connecting bl device to socket");
+                //socket = mmServerSocket!!.accept();
+                Log.d("socket", 5.toString());
+                /*try {
+                    mmServerSocket?.accept();
+                } catch (e: IOException) {
+                    Log.e("Bluetooth", "Socket's accept() method failed", e)
+                    shouldLoop = false
+                    null
+                } finally {
+                    Log.d("accept", "mmserversocket try accept");
+                }*/
+                //shouldLoop = false;
+                if(socket?.isConnected == true) {
+                    socket?.also {
+                        //manageMyConnectedSocket(it)
+
+
+                        Log.d("Bluetooth", "also")
+                        mmServerSocket?.close()
+                        shouldLoop = false
+                    }
+                }
+
+                var bluetoothServiceGuy = MyBluetoothService(handler);
+                BluetoothDevice.createRfcommSocketToServiceRecord(74:B7:E6:2A:92:4F);
+
+                bluetoothServiceGuy.ConnectedThread();
+
+                shouldLoop = false;
+            }
+
+
+        }
+
+        // Closes the connect socket and causes the thread to finish.
+        fun cancel() {
+            try {
+                mmServerSocket?.close()
+            } catch (e: IOException) {
+                Log.e("Bluetooth", "Could not close the connect socket", e)
+            }
+        }
+    }
+
+
+    private val TAG = "MY_APP_DEBUG_TAG"
+
+    // Defines several constants used when transmitting messages between the
+// service and the UI.
+    val MESSAGE_READ: Int = 0
+    val MESSAGE_WRITE: Int = 1
+    val MESSAGE_TOAST: Int = 2
+// ... (Add other message types here as needed.)
+
+    class MyBluetoothService(
+        // handler that gets info from Bluetooth service
+        private val handler: Handler
+    ) {
+
+        public inner class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
+
+            private val mmInStream: InputStream = mmSocket.inputStream
+            private val mmOutStream: OutputStream = mmSocket.outputStream
+            private val mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
+
+            override fun run() {
+                var numBytes: Int // bytes returned from read()
+
+                // Keep listening to the InputStream until an exception occurs.
+                while (true) {
+                    // Read from the InputStream.
+                    numBytes = try {
+                        mmInStream.read(mmBuffer)
+                    } catch (e: IOException) {
+                        Log.d("Bluetooth", "Input stream was disconnected", e)
+                        break
+                    }
+
+                    // Send the obtained bytes to the UI activity.
+                    /*val readMsg = handler.obtainMessage(
+                        MESSAGE_READ, numBytes, -1,
+                        mmBuffer)
+                    readMsg.sendToTarget()*/
+                }
+            }
+
+            // Call this from the main activity to send data to the remote device.
+            fun write(bytes: ByteArray) {
+                try {
+                    mmOutStream.write(bytes)
+                } catch (e: IOException) {
+                    Log.e("Bluetooth", "Error occurred when sending data", e)
+
+                    // Send a failure message back to the activity.
+                    //val writeErrorMsg = handler.obtainMessage(MESSAGE_TOAST)
+                    val bundle = Bundle().apply {
+                        putString("toast", "Couldn't send data to the other device")
+                    }
+                    //writeErrorMsg.data = bundle
+                    //handler.sendMessage(writeErrorMsg)
+                    return
+                }
+
+                // Share the sent message with the UI activity.
+                //val writtenMsg = handler.obtainMessage(
+                //    MESSAGE_WRITE, -1, -1, mmBuffer)
+                //writtenMsg.sendToTarget()
+            }
+
+            // Call this method from the main activity to shut down the connection.
+            fun cancel() {
+                try {
+                    mmSocket.close()
+                } catch (e: IOException) {
+                    Log.e("Bluetooth", "Could not close the connect socket", e)
+                }
+            }
+        }
+    }
+
+    // Create a BroadcastReceiver for ACTION_FOUND.
+    /*private val receiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context, intent: Intent) {
+            val action: String = intent.action
+            when(action) {
+                BluetoothDevice.ACTION_FOUND -> {
+                    // Discovery has found a device. Get the BluetoothDevice
+                    // object and its info from the Intent.
+                    val device: BluetoothDevice =
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                    val deviceName = device.name
+                    val deviceHardwareAddress = device.address // MAC address
+                }
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ...
+
+        // Don't forget to unregister the ACTION_FOUND receiver.
+        unregisterReceiver(receiver)
+    }*/
+
     public fun buttonStart(view: View) {
         Log.d("Start", "Start button clicked")
 
@@ -292,6 +584,12 @@ class MainActivity : ComponentActivity() {
         intBufferSize = AudioRecord.getMinBufferSize(intRecordSampelRate, AudioFormat.CHANNEL_IN_MONO
             , AudioFormat.ENCODING_PCM_16BIT);
 
+        var channelMask: Int = AudioFormat.CHANNEL_IN_MONO
+        if (inputDevice.channelCounts.size >= 2) {
+            channelMask = AudioFormat.CHANNEL_IN_STEREO
+        }
+
+
         shortAudioData = ShortArray(intBufferSize);
 
 
@@ -302,13 +600,26 @@ class MainActivity : ComponentActivity() {
         ) {
             return
         }
-        audioRecord = AudioRecord(MediaRecorder.AudioSource.MIC
-            , intRecordSampelRate, AudioFormat.CHANNEL_IN_STEREO
-            , AudioFormat.ENCODING_PCM_16BIT, intBufferSize);
+        //audioRecord = AudioRecord(MediaRecorder.AudioSource.MIC
+        //    , intRecordSampelRate, channelMask
+        //    , AudioFormat.ENCODING_PCM_16BIT, intBufferSize);
+
+        audioManager.setMode(AudioManager.MODE_IN_CALL);
+
+        audioRecord = AudioRecord.Builder()
+            .setAudioSource(MediaRecorder.AudioSource.MIC)
+            .setAudioFormat(AudioFormat.Builder()
+                .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                .setSampleRate(intRecordSampelRate)
+                .setChannelMask(channelMask)
+                .build())
+            .setBufferSizeInBytes(intBufferSize)
+            .build()
+
 
         audioRecord.preferredDevice = inputDevice;
 
-        audioTrack = AudioTrack(AudioManager.STREAM_MUSIC
+        audioTrack = AudioTrack(AudioManager.STREAM_VOICE_CALL
             , intRecordSampelRate, AudioFormat.CHANNEL_IN_STEREO
             , AudioFormat.ENCODING_PCM_16BIT, intBufferSize, AudioTrack.MODE_STREAM);
 
