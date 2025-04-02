@@ -24,6 +24,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
@@ -32,7 +33,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import java.io.IOException
 import kotlin.math.abs
 import kotlin.math.pow
 
@@ -43,12 +43,13 @@ class MainActivity : ComponentActivity() {
     private lateinit var editTextGainFactor: EditText
     private lateinit var editMinVolume: EditText
     private lateinit var editMaxVolume: EditText
+    private lateinit var EQSwitch: CompoundButton
 
     private lateinit var audioManager: AudioManager;
     private lateinit var audioRecord: AudioRecord;
     private lateinit var audioTrack: AudioTrack;
     private lateinit var inputDevice: AudioDeviceInfo;
-    private lateinit var mEqualizer: Equalizer;
+    private lateinit var equalizer: Equalizer;
 
     private lateinit var properties: SharedPreferences;
 
@@ -60,6 +61,8 @@ class MainActivity : ComponentActivity() {
     private var intGain: Int = 1;
     private var minVolume = 0;
     private var maxVolume = 200;
+
+    private var EQOn: Boolean = false;
 
     private var isActive: Boolean = false;
 
@@ -165,6 +168,7 @@ class MainActivity : ComponentActivity() {
         editTextGainFactor = findViewById(R.id.editTextGainFactor)
         editMinVolume = findViewById(R.id.editMinVolume)
         editMaxVolume = findViewById(R.id.editMaxVolume)
+        EQSwitch = findViewById(R.id.EQ_Switch)
 
         thread = Thread {
             threadLoop();
@@ -235,6 +239,10 @@ class MainActivity : ComponentActivity() {
             override fun afterTextChanged(s: Editable?) {
             }
         })
+
+        EQSwitch.setOnClickListener { view ->
+            equalizer.setEnabled(!equalizer.enabled);
+        }
 
         s.setOnItemSelectedListener(object : OnItemSelectedListener {
             override fun onItemSelected(
@@ -313,6 +321,9 @@ class MainActivity : ComponentActivity() {
             , AudioFormat.ENCODING_PCM_16BIT, intBufferSize, AudioTrack.MODE_STREAM);
 
         audioTrack.setPlaybackRate(intRecordSampelRate);
+
+        attachEQ(audioTrack.audioSessionId);
+
         //audioTrack.setWakeMode(PARTIAL_WAKE_LOCK);
 
         audioRecord.startRecording();
@@ -396,9 +407,9 @@ class MainActivity : ComponentActivity() {
                 posVolume = -Float.MAX_VALUE;
             //accVolume = (averageVolume + k3*averageVel - posVolume - k1*velVolume) / k2;
 */
-            Log.d("real", averageVolume.toString())
-            Log.d("pos", posVolume.toString())
-            Log.d("vel", velVolume.toString())
+            //Log.d("real", averageVolume.toString())
+            //Log.d("pos", posVolume.toString())
+            //Log.d("vel", velVolume.toString())
 
             i = 0;
             while(i < shortAudioData.size) {
@@ -435,6 +446,31 @@ class MainActivity : ComponentActivity() {
         if(wakeLock.isHeld)
             wakeLock.release();
 
+    }
+
+    fun attachEQ(audioSessionId: Int) {
+        equalizer = Equalizer(1000, audioSessionId)
+        val freqRange = equalizer.bandLevelRange
+        val minLvl = freqRange[0]
+        val maxLvl = freqRange[1]
+
+        Log.d("freq", equalizer.getBand(2000 * 1000).toString());
+
+        var bandFreq: ShortArray = shortArrayOf(
+            minLvl,                     // 0
+            (minLvl / 2).toShort(),     // 1
+            (maxLvl / 2).toShort(),     // 2
+            maxLvl,                     // 3
+            minLvl                      // 4
+        );
+
+        equalizer.setBandLevel(4.toShort(), bandFreq[4])
+        equalizer.setBandLevel(3.toShort(), bandFreq[3])
+        equalizer.setBandLevel(2.toShort(), bandFreq[2])
+        equalizer.setBandLevel(1.toShort(), bandFreq[1])
+        equalizer.setBandLevel(0.toShort(), bandFreq[0])
+
+        //equalizer.setEnabled(true)
     }
 
 
